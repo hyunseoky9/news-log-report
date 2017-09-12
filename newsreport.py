@@ -13,24 +13,29 @@ c = db.cursor()
 
 #First question
 print("1. What are the most popular three articles of all time?\n")
-
+#this query gets the portion of the table of view q1, which is created in advance.
 q1 = c.execute("select * from q1 limit 3;")
 result1 = c.fetchall()
-
 #print text about the table
 print('(article, views)\n')
 for item in result1:
-	print ('(' + item[0] + ', ' + str(item[1]) + ')\n')
+	print ('(' + item[0] + ', ' + str(item[1]) + ')')
 
+print('\n')
+
+#Second question
 print("2. Who are the most popular article authors of all time?\n")
+#this query joins all three tables and gets the table of authors' names and their view counts.
 q2 = c.execute("select authors.name, count(*) as views from (articles left join log on articles.path=log.path) join authors on articles.author=authors.id group by authors.name;")
 result2 = c.fetchall()
-
+#print text about the table
 print('(author, views)\n')
 for item in result2:
-	print ('(' + item[0] + ', ' + str(item[1]) + ')\n')	
+	print ('(' + item[0] + ', ' + str(item[1]) + ')')
 
+print('\n')	
 
+#Third question
 print("3. On which days did more than 1% of requests lead to errors?\n")
 #This query gets 2 subqueries. One on all requests on a given day,
 #and another one on the erroneous requests per day.
@@ -43,6 +48,3 @@ for item in result3:
 
 print('\n')
 print('On no day was the error rate of the requests over 1%\n')
-
-#select date(time) as date, count(*) as raw from log group by date;
-#select date(time) as date, count(*) as err from log where status='404 NOT FOUND' group by date order by date desc
